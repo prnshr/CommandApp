@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /**
  
  * organise
@@ -22,8 +24,12 @@ Step 4:- copy every file from the "source folder" to the appropriate folder insi
 Step 5:- Perform unlinkSync on the current file, so that the operation of "cut - paste".
 
 
+// source can ber said as current working directory, now the question is where will organise directory will be created.
+
+We are asuming that there will be souce directory inside our current window directory.
 
  */
+
 
 
 const fs = require("fs");
@@ -33,16 +39,20 @@ const { fileURLToPath } = require("url");
 let validExt = ["jpg", "jpeg", "png", "txt" ]
 
 
-let inputArr = process.argv.slice(2);
+let inputArr = process.argv;
 
 
-let command = inputArr[1];
+let command = inputArr[2];
+// console.log(inputArr);
+let cwd = process.cwd();
 
-isOrganise();
+isOrganise(command,cwd);
 
 
 
-function isOrganise(){
+
+
+function isOrganise(command, cwd){
     if(command == null){
         console.log(" Please enter a command");
         
@@ -50,12 +60,13 @@ function isOrganise(){
 
     if(command == "organise"){
         console.log(" Organised command invokded.... Started Processing");
-        let basePath = "organise";
+        let basePath = path.join(cwd ,"organise");
         if(!fs.existsSync(basePath)){
             console.log("Creating Organise Folder");
             fs.mkdirSync(basePath);
         }
-        organise("source");
+
+        organise(path.join(cwd ,"source"));
         
     }
 }
@@ -118,4 +129,17 @@ function checkAndCreatePath(ext){
         fs.mkdirSync(destPath);
     }
     return destPath;
+}
+
+
+/**
+ * Shebang syntax is used for implementing command line feature
+ * npm init -y
+ * bin:{"pep":"activity.js"}
+ * npm link
+ */
+
+
+function isTree(baseDir){
+    // Show the tree structure of the whole 
 }
