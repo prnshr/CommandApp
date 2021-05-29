@@ -43,32 +43,40 @@ let inputArr = process.argv;
 
 
 let command = inputArr[2];
-// console.log(inputArr);
+// // console.log(inputArr);
 let cwd = process.cwd();
 
-isOrganise(command,cwd);
+// // isOrganise(command,cwd);
+// isTree(cwd, command);
 
+if(command == "organise"){
+    isOrganise(command,cwd);  
 
+}
+else if(command == "tree"){
+    isTree(cwd,command);
+}
+else if(command == "help"){
+    help();
+}
+else{
+    console.log("Please enter correct command");
+}
 
 
 
 function isOrganise(command, cwd){
-    if(command == null){
-        console.log(" Please enter a command");
-        
+    
+    console.log(" Organised command invokded.... Started Processing");
+    let basePath = path.join(cwd ,"organise");
+    if(!fs.existsSync(basePath)){
+        console.log("Creating Organise Folder");
+        fs.mkdirSync(basePath);
     }
 
-    if(command == "organise"){
-        console.log(" Organised command invokded.... Started Processing");
-        let basePath = path.join(cwd ,"organise");
-        if(!fs.existsSync(basePath)){
-            console.log("Creating Organise Folder");
-            fs.mkdirSync(basePath);
-        }
-
-        organise(path.join(cwd ,"source"));
+    organise(path.join(cwd ,"source"));
         
-    }
+    
 }
 
 
@@ -140,6 +148,40 @@ function checkAndCreatePath(ext){
  */
 
 
-function isTree(baseDir){
+function isTree(cwd, command){
     // Show the tree structure of the whole 
+ 
+    let baseDir = path.join(cwd,"organise");
+    console.log(cwd);
+    treeHelper("",cwd);
+
+}
+
+function treeHelper(indent, baseDir){
+
+    if(fs.lstatSync(baseDir).isFile()){
+        let fileName = path.basename(baseDir);
+        console.log(indent +"|--- "+ fileName);
+        return;
+    }
+
+   
+    let dirName = path.basename(baseDir);
+    console.log(indent+"#--- " + dirName);
+    let children = fs.readdirSync(baseDir);
+    // console.log(children);
+
+    for(let i =0;i<children.length;i++){
+        let child = children[i];
+        let childPath =path.join(baseDir, child);
+        treeHelper(indent+"---",childPath);
+    }
+}
+
+
+function help(){
+
+    console.log("help => displays all the available functionalities");
+    console.log("tree => displays the contents of the current working directory in the form of tree");
+    console.log("organise => organises all the files present in source folder on the basis of extensions [ jpeg, jpg, png, txt, other ]");
 }
